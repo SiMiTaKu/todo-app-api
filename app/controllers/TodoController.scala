@@ -14,6 +14,10 @@ import play.api.i18n.I18nSupport
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
+import json.writes.JsValueTodoListItem
+import play.api.libs.json.Json
+
+
 @Singleton
 class TodoController @Inject()(
     val controllerComponents: ControllerComponents
@@ -38,6 +42,16 @@ class TodoController @Inject()(
       categoryList <- categories
     } yield{
       Ok(views.html.todo.list(todoList, categoryList, vv))
+    }
+  }
+
+  def index() = Action async{ implicit req =>
+    val todoList    = TodoRepository.getAll()
+    for{
+      todos <- todoList
+    } yield {
+      val jsValue = JsValueTodoListItem.apply(todos)
+      Ok(Json.toJson(jsValue))
     }
   }
 
