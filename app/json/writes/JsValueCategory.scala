@@ -3,7 +3,7 @@ package json.writes
 import play.api.libs.json._
 import lib.persistence.default.CategoryRepository.EntityEmbeddedId
 
-object JsValueCategoryList {
+object JsValueCategory {
   def apply(categories: Seq[EntityEmbeddedId]): Seq[JsValue] =
     categories.map{ category =>
       JsObject(Seq(

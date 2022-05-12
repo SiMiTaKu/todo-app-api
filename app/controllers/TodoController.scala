@@ -6,7 +6,7 @@ import lib.formData.formData.{editForm, form}
 
 import javax.inject._
 import play.api.mvc._
-import model.{ViewValueDetail, ViewValueEdit, ViewValueError, ViewValueList, ViewValueRegister}
+import model.{ViewValueEdit, ViewValueError, ViewValueRegister}
 import lib.persistence.default.{CategoryRepository, TodoRepository}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -14,7 +14,7 @@ import play.api.i18n.I18nSupport
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
-import json.writes.JsValueTodoList
+import json.writes.JsValueTodo
 import play.api.libs.json.Json
 
 
@@ -31,26 +31,15 @@ class TodoController @Inject()(
 
   def list() = Action async{ implicit req =>
     TodoRepository.getAll().map{
-      todos => Ok(Json.toJson(JsValueTodoList.apply(todos)))
+      todos => Ok(Json.toJson(JsValueTodo.list(todos)))
     }
   }
 
   def detail(id: Long) = Action async { implicit request: Request[AnyContent] =>
-    val vv = ViewValueDetail(
-      title  = s"Detail  Todo No.${id}",
-      cssSrc = Seq("main.css"),
-      jsSrc  = Seq("main.js")
-    )
-    val todoGet    = TodoRepository.get(Todo.Id(id))
-    val categories = CategoryRepository.getAll()
-
-    for{
-      todo         <- todoGet
-      categoryList <- categories
-    } yield {
-      todo match {
-        case Some(result) => Ok(views.html.todo.detail(result, categoryList, vv))
-        case None         => NotFound(views.html.page404(error_vv))
+    TodoRepository.get(Todo.Id(id)).map{
+      todo => todo match{
+        case Some(result) => Ok(Json.toJson(JsValueTodo.single(result)))
+        case None         => NotFound
       }
     }
   }
@@ -122,8 +111,6 @@ class TodoController @Inject()(
       }
     }
   }
-
-
 
   def update(id: Long) = Action async { implicit request: Request[AnyContent] =>
     val vv = ViewValueEdit(

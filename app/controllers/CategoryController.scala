@@ -1,6 +1,6 @@
 package controllers
 
-import json.writes.JsValueCategoryList
+import json.writes.JsValueCategory
 import lib.model.{Category}
 import lib.persistence.default.{CategoryRepository, TodoRepository}
 import lib.formData.CategoryFormData
@@ -31,7 +31,7 @@ class CategoryController @Inject()(
 
   def list() = Action async{ implicit req =>
     CategoryRepository.getAll().map{
-      categories => Ok(Json.toJson(JsValueCategoryList.apply(categories)))
+      categories => Ok(Json.toJson(JsValueCategory.apply(categories)))
     }
   }
 
