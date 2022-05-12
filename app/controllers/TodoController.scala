@@ -30,22 +30,6 @@ class TodoController @Inject()(
   )
 
   def list() = Action async{ implicit req =>
-    val vv  = ViewValueList(
-      title  = "Todo List",
-      cssSrc = Seq("main.css"),
-      jsSrc  = Seq("main.js")
-    )
-    val todos      = TodoRepository.getAll()
-    val categories = CategoryRepository.getAll()
-    for{
-      todoList     <- todos
-      categoryList <- categories
-    } yield{
-      Ok(views.html.todo.list(todoList, categoryList, vv))
-    }
-  }
-
-  def index() = Action async{ implicit req =>
     val todoList    = TodoRepository.getAll()
     for{
       todos <- todoList
