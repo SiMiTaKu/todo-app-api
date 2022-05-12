@@ -1,15 +1,17 @@
 package controllers
 
-import lib.model.{Category, Todo}
+import json.writes.JsValueCategoryList
+import lib.model.{Category}
 import lib.persistence.default.{CategoryRepository, TodoRepository}
 import lib.formData.CategoryFormData
 import lib.formData.formData.categoryForm
 
 import javax.inject._
 import play.api.mvc.{BaseController, _}
-import model.{ViewValueEdit, ViewValueError, ViewValueList, ViewValueRegister}
+import model.{ViewValueEdit, ViewValueError, ViewValueRegister}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -28,12 +30,9 @@ class CategoryController @Inject()(
   )
 
   def list() = Action async{ implicit req =>
-    val vv = ViewValueList(
-      title  = "Category List",
-      cssSrc = Seq("main.css"),
-      jsSrc  = Seq("main.js")
-    )
-    CategoryRepository.getAll().map{ categories => Ok(views.html.category.list(categories, vv))}
+    CategoryRepository.getAll().map{
+      categories => Ok(Json.toJson(JsValueCategoryList.apply(categories)))
+    }
   }
 
   def register() = Action async{ implicit request: Request[AnyContent] =>
