@@ -1,21 +1,20 @@
 package controllers
 
-import lib.model.{Category, Todo}
-import lib.formData.{TodoEditFormData, TodoFormData}
-import lib.formData.formData.{editForm, form}
+import lib.model.{ Category, Todo }
+import lib.formData.{ TodoEditFormData, TodoFormData }
+import lib.formData.formData.{ editForm, form }
+import lib.persistence.default.{ CategoryRepository, TodoRepository }
 
-import javax.inject._
 import play.api.mvc._
-import model.{ViewValueEdit, ViewValueError, ViewValueRegister}
-import lib.persistence.default.{CategoryRepository, TodoRepository}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
-import json.writes.JsValueTodo
-import play.api.libs.json.Json
+import javax.inject._
+
+import model.{ViewValueList,ViewValueDetail, ViewValueEdit, ViewValueError, ViewValueRegister}
 
 
 @Singleton
@@ -30,16 +29,37 @@ class TodoController @Inject()(
   )
 
   def list() = Action async{ implicit req =>
-    TodoRepository.getAll().map{
-      todos => Ok(Json.toJson(JsValueTodo.list(todos)))
+    val vv = ViewValueList(
+      title = "Todo List",
+      cssSrc = Seq("main.css"),
+      jsSrc  = Seq("main.js")
+    )
+    val todos      = TodoRepository.getAll()
+    val categories = CategoryRepository.getAll()
+    for{
+      todoList     <- todos
+      categoryList <- categories
+    } yield{
+      Ok(views.html.todo.list(todoList, categoryList, vv))
     }
   }
 
   def detail(id: Long) = Action async { implicit request: Request[AnyContent] =>
-    TodoRepository.get(Todo.Id(id)).map{
-      todo => todo match{
-        case Some(result) => Ok(Json.toJson(JsValueTodo.single(result)))
-        case None         => NotFound
+    val vv = ViewValueDetail(
+      title  = s"Detail  Todo No.${id}",
+      cssSrc = Seq("main.css"),
+      jsSrc  = Seq("main.js")
+    )
+    val todoGet    = TodoRepository.get(Todo.Id(id))
+    val categories = CategoryRepository.getAll()
+
+    for{
+      todo         <- todoGet
+      categoryList <- categories
+    } yield {
+      todo match {
+        case Some(result) => Ok(views.html.todo.detail(result, categoryList, vv))
+        case None         => NotFound(views.html.page404(error_vv))
       }
     }
   }
