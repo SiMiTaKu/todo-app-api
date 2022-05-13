@@ -29,4 +29,11 @@ class TodoApiController @Inject()(
       }
     }
   }
+
+  def remove(id: Long) = Action async {implicit request: Request[AnyContent] =>
+    TodoRepository.remove(Todo.Id(id)).map {
+      case Some(result) => Ok
+      case None         => NotFound
+    }
+  }
 }

@@ -41,6 +41,12 @@ GET     /api/todo/list                     controllers.TodoApiController.list
 
 GET     /api/todo/$id<[0-9]+>              controllers.TodoApiController.detail(id: Long)
 
++nocsrf
+DELETE  /api/todo/$id<[0-9]+>/remove        controllers.TodoApiController.remove(id:Long)
+
 GET     /api/category/list                 controllers.CategoryApiController.list
 
 GET     /api/category/$id<[0-9]+>          controllers.CategoryApiController.detail(id: Long)
+
++nocsrf
+DELETE  /api/category/$id<[0-9]+>/remove   controllers.CategoryApiController.remove(id: Long)

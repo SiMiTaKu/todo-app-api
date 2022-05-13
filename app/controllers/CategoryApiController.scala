@@ -1,17 +1,16 @@
 package controllers
 
-import lib.model.{Category}
-import lib.persistence.default.CategoryRepository
-
+import lib.model.Category
+import lib.persistence.default.{CategoryRepository, TodoRepository}
 import play.api.mvc.{BaseController, _}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import javax.inject._
-
 import json.writes.WriteJsValueCategory
+
+import scala.concurrent.Future.successful
 
 @Singleton
 class CategoryApiController @Inject()(
@@ -28,6 +27,21 @@ class CategoryApiController @Inject()(
     CategoryRepository.get(Category.Id(id)).map {
       case None => NotFound
       case Some(category) => Ok(Json.toJson(WriteJsValueCategory.single(category)))
+    }
+  }
+
+  def remove(id: Long) = Action async { implicit request: Request[AnyContent] =>
+    for{
+      result <- CategoryRepository.remove(Category.Id(id))
+      _      <- result match {
+                  case None => successful(None)
+                  case _    => TodoRepository.removeMatchCategory(Category.Id(id))
+                }
+    } yield {
+      result match {
+        case None => NotFound
+        case _    => Ok
+      }
     }
   }
 }
