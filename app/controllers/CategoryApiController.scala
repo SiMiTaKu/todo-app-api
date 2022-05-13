@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import javax.inject._
 
-import json.writes.JsValueCategory
+import json.writes.WriteJsValueCategory
 
 @Singleton
 class CategoryApiController @Inject()(
@@ -20,14 +20,14 @@ class CategoryApiController @Inject()(
 
   def list() = Action async { implicit req =>
     CategoryRepository.getAll().map {
-      categories => Ok(Json.toJson(JsValueCategory.list(categories)))
+      categories => Ok(Json.toJson(WriteJsValueCategory.list(categories)))
     }
   }
 
   def detail(id: Long) = Action async { implicit rew =>
     CategoryRepository.get(Category.Id(id)).map {
       case None => NotFound
-      case Some(category) => Ok(Json.toJson(JsValueCategory.single(category)))
+      case Some(category) => Ok(Json.toJson(WriteJsValueCategory.single(category)))
     }
   }
 }
