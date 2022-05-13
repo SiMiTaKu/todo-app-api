@@ -1,13 +1,11 @@
 package controllers
 
-import lib.model.{Category, Todo}
+import lib.model.{Category}
 import lib.persistence.default.{CategoryRepository, TodoRepository}
 import lib.formData.CategoryFormData
 import lib.formData.formData.categoryForm
 
-import javax.inject._
 import play.api.mvc.{BaseController, _}
-import model.{ViewValueEdit, ViewValueError, ViewValueList, ViewValueRegister}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 
@@ -15,6 +13,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Future.successful
 
+import javax.inject._
+
+import model.{ViewValueList, ViewValueEdit, ViewValueError, ViewValueRegister}
 
 @Singleton
 class CategoryController @Inject()(

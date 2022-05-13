@@ -1,18 +1,21 @@
 package controllers
 
-import lib.model.{Category, Todo}
-import lib.formData.{TodoEditFormData, TodoFormData}
-import lib.formData.formData.{editForm, form}
+import lib.model.{ Category, Todo }
+import lib.formData.{ TodoEditFormData, TodoFormData }
+import lib.formData.formData.{ editForm, form }
+import lib.persistence.default.{ CategoryRepository, TodoRepository }
 
-import javax.inject._
 import play.api.mvc._
-import model.{ViewValueDetail, ViewValueEdit, ViewValueError, ViewValueList, ViewValueRegister}
-import lib.persistence.default.{CategoryRepository, TodoRepository}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
+
+import javax.inject._
+
+import model.{ViewValueList,ViewValueDetail, ViewValueEdit, ViewValueError, ViewValueRegister}
+
 
 @Singleton
 class TodoController @Inject()(
@@ -26,8 +29,8 @@ class TodoController @Inject()(
   )
 
   def list() = Action async{ implicit req =>
-    val vv  = ViewValueList(
-      title  = "Todo List",
+    val vv = ViewValueList(
+      title = "Todo List",
       cssSrc = Seq("main.css"),
       jsSrc  = Seq("main.js")
     )
@@ -128,8 +131,6 @@ class TodoController @Inject()(
       }
     }
   }
-
-
 
   def update(id: Long) = Action async { implicit request: Request[AnyContent] =>
     val vv = ViewValueEdit(
