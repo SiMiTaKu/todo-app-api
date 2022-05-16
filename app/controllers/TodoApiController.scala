@@ -1,14 +1,19 @@
 package controllers
 
-import lib.model.Todo
+import lib.model.{Category, Todo}
 import lib.persistence.default.TodoRepository
+
 import play.api.mvc._
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 
+import scala.concurrent.Future.successful
 import scala.concurrent.ExecutionContext.Implicits.global
-import javax.inject._
+
 import json.writes.WriteJsValueTodo
+import json.reads.ReadJsValueTodo.JsValueCreateTodo
+
+import javax.inject._
 
 @Singleton
 class TodoApiController @Inject()(
@@ -30,10 +35,29 @@ class TodoApiController @Inject()(
     }
   }
 
-  def remove(id: Long) = Action async {implicit request: Request[AnyContent] =>
+  def remove(id: Long) = Action async { implicit request: Request[AnyContent] =>
     TodoRepository.remove(Todo.Id(id)).map {
       case Some(result) => Ok
       case None         => NotFound
     }
+  }
+
+  def add() = Action(parse.json).async { implicit req =>
+    req.body
+      .validate[JsValueCreateTodo]
+      .fold(
+        errors =>{
+          successful(NotFound)
+        },
+        todoData => {
+          TodoRepository.add(
+            Todo.apply(
+              Category.Id(todoData.category_id.toLong),
+              todoData.title,
+              todoData.body
+            )
+          ).map{_ => Ok}
+        }
+      )
   }
 }

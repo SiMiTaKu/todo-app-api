@@ -39,6 +39,8 @@ POST    /category/$id<[0-9]+>/remove   controllers.CategoryController.remove(id:
 #API---------------------------------------------------
 GET     /api/todo/list                     controllers.TodoApiController.list
 
+POST    /api/todo/add                      controllers.TodoApiController.add
+
 GET     /api/todo/$id<[0-9]+>              controllers.TodoApiController.detail(id: Long)
 
 DELETE  /api/todo/$id<[0-9]+>              controllers.TodoApiController.remove(id:Long)
