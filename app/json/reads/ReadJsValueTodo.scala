@@ -7,7 +7,7 @@ object ReadJsValueTodo {
   case class JsValueCreateTodo(
                                 title:       String,
                                 body:        String,
-                                category_id: String, //reqを渡す時にtoLong
+                                category_id: Long, //reqを渡す時にtoLong
                               )
 
   implicit val reads: Reads[JsValueCreateTodo] = Json.reads[JsValueCreateTodo]

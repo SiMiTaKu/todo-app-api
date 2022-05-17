@@ -46,13 +46,14 @@ class TodoApiController @Inject()(
     req.body
       .validate[JsValueCreateTodo]
       .fold(
-        errors =>{
+        errors => {
+          println(req.body)
           successful(NotFound)
         },
         todoData => {
           TodoRepository.add(
             Todo.apply(
-              Category.Id(todoData.category_id.toLong),
+              Category.Id(todoData.category_id),
               todoData.title,
               todoData.body
             )
