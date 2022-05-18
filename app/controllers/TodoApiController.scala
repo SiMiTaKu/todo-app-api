@@ -11,7 +11,7 @@ import scala.concurrent.Future.successful
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import json.writes.WriteJsValueTodo
-import json.reads.ReadJsValueTodo.JsValueCreateTodo
+import json.reads.ReadJsValueTodo.{JsValueCreateTodo, JsValueUpdateTodo}
 
 import javax.inject._
 
@@ -47,7 +47,6 @@ class TodoApiController @Inject()(
       .validate[JsValueCreateTodo]
       .fold(
         errors => {
-          println(req.body)
           successful(NotFound)
         },
         todoData => {
@@ -57,8 +56,37 @@ class TodoApiController @Inject()(
               todoData.title,
               todoData.body
             )
-          ).map{_ => Ok}
+          ).map(_ => Ok)
         }
       )
+  }
+
+  def update(id: Long) = Action(parse.json).async { implicit req =>
+    req.body
+      .validate[JsValueUpdateTodo]
+        .fold(
+          errors => {
+            successful(NotFound)
+          },
+          todoData => {
+            for{
+              result <- TodoRepository.get(Todo.Id(id))
+              _      <- result match {
+                case None      => successful(NotFound)
+                case Some(old) => TodoRepository.update(old.map(_.copy(
+                                    category_id = Category.Id(todoData.category_id),
+                                    title       = todoData.title,
+                                    body        = todoData.body,
+                                    state       = Todo.Status(todoData.state)
+                                  )))
+              }
+            } yield {
+              result match {
+                case None => NotFound
+                case _    => Ok
+              }
+            }
+          }
+        )
   }
 }

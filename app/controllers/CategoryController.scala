@@ -132,6 +132,5 @@ class CategoryController @Inject()(
         case _    => Redirect(routes.CategoryController.list)
       }
     }
-
   }
 }
