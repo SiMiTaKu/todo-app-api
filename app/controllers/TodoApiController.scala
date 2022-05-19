@@ -65,28 +65,25 @@ class TodoApiController @Inject()(
     req.body
       .validate[JsValueUpdateTodo]
         .fold(
-          errors => {
-            successful(NotFound)
-          },
-          todoData => {
-            for{
-              result <- TodoRepository.get(Todo.Id(id))
-              _      <- result match {
-                case None      => successful(NotFound)
-                case Some(old) => TodoRepository.update(old.map(_.copy(
-                                    category_id = Category.Id(todoData.category_id),
-                                    title       = todoData.title,
-                                    body        = todoData.body,
-                                    state       = Todo.Status(todoData.state)
-                                  )))
-              }
-            } yield {
-              result match {
-                case None => NotFound
-                case _    => Ok
-              }
-            }
-          }
+          errors   => successful(NotFound),
+          todoData => for{
+                        result <- TodoRepository.get(Todo.Id(id))
+                        _      <- result match {
+                                    case None      => successful(NotFound)
+                                    case Some(old) => TodoRepository.update(old.map(_.copy(
+                                                        category_id = Category.Id(todoData.category_id),
+                                                        title       = todoData.title,
+                                                        body        = todoData.body,
+                                                        state       = Todo.Status(todoData.state)
+                                                      )))
+                                  }
+                      } yield {
+                        result match {
+                          case None => NotFound
+                          case _    => Ok
+                        }
+                      }
+
         )
   }
 }

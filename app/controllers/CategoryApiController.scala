@@ -63,4 +63,27 @@ class CategoryApiController @Inject()(
         ).map(_    => Ok)
       )
   }
+
+  def update(id: Long) = Action ( parse.json ).async { implicit req =>
+    req.body
+      .validate[JsValueCreateCategory].fold(
+        error    => successful(NotFound),
+        category => for{
+                      result <- CategoryRepository.get(Category.Id(id))
+                      _      <- result match {
+                                  case None      => successful(NotFound)
+                                  case Some(old) => CategoryRepository.update(old.map(_.copy(
+                                                      name = category.name,
+                                                      slug = category.slug,
+                                                      color = ColorMap(category.color)
+                                                    )))
+                                }
+                    }yield{
+                      result match{
+                        case None => NotFound
+                        case _    => Ok
+                      }
+                    }
+      )
+  }
 }
