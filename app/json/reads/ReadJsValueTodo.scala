@@ -1,7 +1,8 @@
 
 package json.reads
 
-import play.api.libs.json.{Json, Reads}
+import lib.model.{Category, Todo}
+import play.api.libs.json._
 
 object ReadJsValueTodo {
   //それぞれに必要なreadを用意する必要がある。
@@ -10,8 +11,9 @@ object ReadJsValueTodo {
                                 body:        String,
                                 category_id: Long,
                               )
-
-  implicit val reads: Reads[JsValueCreateTodo] = Json.reads[JsValueCreateTodo]
+  //implicit val readCategoryId: Reads[Category.Id] = _.validate[lib.model.Category.Id]
+  //エラーになるためコメントアウト
+  implicit val reads: Reads[JsValueCreateTodo]    = Json.reads[JsValueCreateTodo]
 
   case class JsValueUpdateTodo(
                                 id:          Long,
@@ -20,5 +22,10 @@ object ReadJsValueTodo {
                                 category_id: Long,
                                 state:       Short,
                               )
+
+
+  //implicit val readTodoId:  Reads[Todo.Id]           = _.validate[lib.model.Todo.Id]
+  //エラーになるためコメントアウト
   implicit val readsUpdate: Reads[JsValueUpdateTodo] = Json.reads[JsValueUpdateTodo]
+
 }

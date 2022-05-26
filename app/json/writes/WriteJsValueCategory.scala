@@ -13,12 +13,10 @@ object WriteJsValueCategory {
                                 color: Short,
                                 )
 
-  implicit val writes = (
-    (__ \ "id"    ).write[Long] ~
-    (__ \ "name"  ).write[String] ~
-    (__ \ "slug"  ).write[String] ~
-    (__ \ "color" ).write[Short]
-  )(unlift(JsValueCategoryItem.unapply))
+  implicit val writeCategoryId: Writes[Category.Id] = JsNumber(_)
+
+  implicit val writes: Writes[JsValueCategoryItem] = Json.writes[JsValueCategoryItem]
+
 
   def list(categories: Seq[EntityEmbeddedId]): Seq[JsValueCategoryItem] = {
     categories.map{ category => single(category) }

@@ -62,6 +62,8 @@ class TodoApiController @Inject()(
   }
 
   def update(id: Long) = Action(parse.json).async { implicit req =>
+    println(req.body)
+    println(req.body.validate[JsValueUpdateTodo])
     req.body
       .validate[JsValueUpdateTodo]
         .fold(

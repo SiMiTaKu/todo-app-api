@@ -65,6 +65,8 @@ class CategoryApiController @Inject()(
   }
 
   def update(id: Long) = Action ( parse.json ).async { implicit req =>
+    println(req.body)
+    println(req.body.validate[JsValueCreateCategory])
     req.body
       .validate[JsValueCreateCategory].fold(
         error    => successful(NotFound),

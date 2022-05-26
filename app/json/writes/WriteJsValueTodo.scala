@@ -4,23 +4,19 @@ import lib.model.{Category, Todo}
 import play.api.libs.json._
 import lib.persistence.default.TodoRepository.EntityEmbeddedId
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
+import json.writes.WriteJsValueCategory.writeCategoryId
 
 object WriteJsValueTodo {
   case class JsValueTodoItem(
                                   id:          Todo.Id,
-                                  category_id: Category.Id,
                                   title:       String,
                                   body:        String,
+                                  category_id: Category.Id,
                                   state:       Short
                                 )
+  implicit val writeTodoId: Writes[Todo.Id] = JsNumber(_)
 
-  implicit val writes = (
-    (__ \ "id"         ).write[Long] ~
-    (__ \ "category_id").write[Long] ~
-    (__ \ "title"      ).write[String] ~
-    (__ \ "body"       ).write[String] ~
-    (__ \ "state"      ).write[Short]
-  )(unlift(JsValueTodoItem.unapply))
+  implicit val writes: Writes[JsValueTodoItem] = Json.writes[JsValueTodoItem]
 
   def list(todos: Seq[EntityEmbeddedId]): Seq[JsValueTodoItem] = {
     todos.map { todo => single(todo) }
