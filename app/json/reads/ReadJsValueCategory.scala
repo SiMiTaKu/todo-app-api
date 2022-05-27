@@ -3,7 +3,9 @@ package json.reads
 import lib.model.Category
 import play.api.libs.json.{Json, Reads}
 
-object ReadJsValueCategory{
+import ixias.util.json.JsonEnvReads
+
+object ReadJsValueCategory extends JsonEnvReads {
   case class JsValueCreateCategory(
                                 name:  String,
                                 slug:  String,
@@ -18,6 +20,6 @@ object ReadJsValueCategory{
                                     color: Short
                                   )
 
-  implicit val readCategoryId: Reads[Category.Id]           = _.validate[Category.Id]
+  implicit val readCategoryId: Reads[Category.Id]           = idAsNumberReads[Category.Id]
   implicit val readUpdate:     Reads[JsValueUpdateCategory] = Json.reads[JsValueUpdateCategory]
 }

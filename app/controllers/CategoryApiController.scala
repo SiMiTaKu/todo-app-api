@@ -3,7 +3,6 @@ package controllers
 import lib.model.Category
 import lib.model.Category.ColorMap
 import lib.persistence.default.{CategoryRepository, TodoRepository}
-
 import play.api.mvc.{BaseController, _}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -11,11 +10,9 @@ import play.api.libs.json.Json
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 import json.writes.WriteJsValueCategory
-import json.reads.ReadJsValueCategory.JsValueCreateCategory
+import json.reads.ReadJsValueCategory.{JsValueCreateCategory, JsValueUpdateCategory}
 
 import javax.inject._
-
-
 
 @Singleton
 class CategoryApiController @Inject()(
@@ -65,10 +62,8 @@ class CategoryApiController @Inject()(
   }
 
   def update(id: Long) = Action ( parse.json ).async { implicit req =>
-    println(req.body)
-    println(req.body.validate[JsValueCreateCategory])
     req.body
-      .validate[JsValueCreateCategory].fold(
+      .validate[JsValueUpdateCategory].fold(
         error    => successful(NotFound),
         category => for{
                       result <- CategoryRepository.get(Category.Id(id))
