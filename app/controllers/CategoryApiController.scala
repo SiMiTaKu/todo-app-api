@@ -55,7 +55,7 @@ class CategoryApiController @Inject()(
           Category.apply(
             category.name,
             category.slug,
-            ColorMap(category.color)
+            category.color
           )
         ).map(_    => Ok)
       )
@@ -70,9 +70,9 @@ class CategoryApiController @Inject()(
                       _      <- result match {
                                   case None      => successful(NotFound)
                                   case Some(old) => CategoryRepository.update(old.map(_.copy(
-                                                      name = category.name,
-                                                      slug = category.slug,
-                                                      color = ColorMap(category.color)
+                                                      name  = category.name,
+                                                      slug  = category.slug,
+                                                      color = category.color
                                                     )))
                                 }
                     }yield{

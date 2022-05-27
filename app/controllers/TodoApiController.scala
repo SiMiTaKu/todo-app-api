@@ -74,7 +74,7 @@ class TodoApiController @Inject()(
                                                         category_id = Category.Id(todoData.category_id),
                                                         title       = todoData.title,
                                                         body        = todoData.body,
-                                                        state       = Todo.Status(todoData.state)
+                                                        state       = todoData.state
                                                       )))
                                   }
                       } yield {

@@ -3,9 +3,9 @@ package json.reads
 
 import lib.model.{Category, Todo}
 import play.api.libs.json._
-
 import ixias.util.json.JsonEnvReads
 import json.reads.ReadJsValueCategory.readCategoryId
+import lib.model.Todo.Status
 
 object ReadJsValueTodo extends JsonEnvReads {
   //それぞれに必要なreadを用意する必要がある。
@@ -22,7 +22,7 @@ object ReadJsValueTodo extends JsonEnvReads {
                                 title:       String,
                                 body:        String,
                                 category_id: Category.Id,
-                                state:       Short,
+                                state:       Status,
                               )
 
   // ixias.uril.json.JsonEnvReads
@@ -38,6 +38,18 @@ object ReadJsValueTodo extends JsonEnvReads {
   //     }
   //   }
   implicit val readTodoId:  Reads[Todo.Id]           = idAsNumberReads[Todo.Id]
+
+  //  ixias.uril.json.JsonEnvReads
+  //  def enumReads[E <: ixias.util.EnumStatus](enum: ixias.util.EnumStatus.Of[E]): Reads[E] =
+  //    new Reads[E] {
+  //      def reads(json: JsValue) = json match {
+  //        case JsNumber(n) if n.isValidShort => JsSuccess(enum(n.toShort))
+  //        case JsNumber(n) => JsError("error.expected.enum.short")
+  //        case _           => JsError("error.expected.enum.jsnumber")
+  //      }
+  //    }
+  implicit val readTodoStatus: Reads[Status] = enumReads(Status)
+
   implicit val readsUpdate: Reads[JsValueUpdateTodo] = Json.reads[JsValueUpdateTodo]
 
 }
