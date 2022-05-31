@@ -1,21 +1,25 @@
 package json.writes
 
-import lib.model.{Category, Todo}
+import lib.model.{ Category, Todo }
 import lib.model.Todo.Status
 import lib.persistence.default.TodoRepository.EntityEmbeddedId
 import play.api.libs.json._
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import json.writes.WriteJsValueCategory.writeCategoryId
 import ixias.util.json.JsonEnvWrites
 
-object WriteJsValueTodo extends JsonEnvWrites{
+import java.time.LocalDateTime
+
+object WriteJsValueTodo extends JsonEnvWrites {
   case class JsValueTodoItem(
-                                  id:          Todo.Id,
-                                  title:       String,
-                                  body:        String,
-                                  category_id: Category.Id,
-                                  state:       Status
-                                )
+    id:          Todo.Id,
+    title:       String,
+    body:        String,
+    category_id: Category.Id,
+    state:       Status,
+    updated_at:  LocalDateTime,
+    created_at:  LocalDateTime,
+  )
+
   implicit val writeTodoId: Writes[Todo.Id] = JsNumber(_)
 
   // ixias.util.json.JsonEnvWrites
@@ -37,7 +41,9 @@ object WriteJsValueTodo extends JsonEnvWrites{
       category_id = todo.v.category_id,
       title       = todo.v.title,
       body        = todo.v.body,
-      state       = todo.v.state
+      state       = todo.v.state,
+      updated_at  = todo.v.updatedAt,
+      created_at  = todo.v.createdAt
     )
   }
 }

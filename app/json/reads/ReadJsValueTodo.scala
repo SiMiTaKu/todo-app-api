@@ -1,29 +1,32 @@
-
 package json.reads
 
-import lib.model.{Category, Todo}
+import lib.model.{ Category, Todo }
 import play.api.libs.json._
 import ixias.util.json.JsonEnvReads
 import json.reads.ReadJsValueCategory.readCategoryId
 import lib.model.Todo.Status
 
+import java.time.LocalDateTime
+
 object ReadJsValueTodo extends JsonEnvReads {
   //それぞれに必要なreadを用意する必要がある。
   case class JsValueCreateTodo(
-                                title:       String,
-                                body:        String,
-                                category_id: Category.Id,
-                              )
+    title:       String,
+    body:        String,
+    category_id: Category.Id,
+  )
 
-  implicit val reads: Reads[JsValueCreateTodo]    = Json.reads[JsValueCreateTodo]
+  implicit val reads: Reads[JsValueCreateTodo] = Json.reads[JsValueCreateTodo]
 
   case class JsValueUpdateTodo(
-                                id:          Todo.Id,
-                                title:       String,
-                                body:        String,
-                                category_id: Category.Id,
-                                state:       Status,
-                              )
+    id:          Todo.Id,
+    title:       String,
+    body:        String,
+    category_id: Category.Id,
+    state:       Status,
+    updated_at:  LocalDateTime,
+    created_at:  LocalDateTime
+  )
 
   // ixias.uril.json.JsonEnvReads
   // def idAsNumberReads[T <: ixias.model.@@[Long, _]]: Reads[T] =
@@ -37,7 +40,7 @@ object ReadJsValueTodo extends JsonEnvReads {
   //       case _           => JsError("error.expected.tag.jsnumber")
   //     }
   //   }
-  implicit val readTodoId:  Reads[Todo.Id]           = idAsNumberReads[Todo.Id]
+  implicit val readTodoId: Reads[Todo.Id] = idAsNumberReads[Todo.Id]
 
   //  ixias.uril.json.JsonEnvReads
   //  def enumReads[E <: ixias.util.EnumStatus](enum: ixias.util.EnumStatus.Of[E]): Reads[E] =

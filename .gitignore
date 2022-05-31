@@ -10,3 +10,4 @@ target
 docker/db/data/
 .DS_Store
 todo-app-api.iml
+.scalafmt.conf
