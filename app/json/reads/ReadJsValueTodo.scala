@@ -1,10 +1,10 @@
 package json.reads
 
-import lib.model.{ Category, Todo }
+import lib.model.{Category, Todo}
 import play.api.libs.json._
 import ixias.util.json.JsonEnvReads
 import json.reads.ReadJsValueCategory.readCategoryId
-import lib.model.Todo.Status
+import lib.model.Todo.{Importance, Status}
 
 import java.time.LocalDateTime
 
@@ -14,7 +14,10 @@ object ReadJsValueTodo extends JsonEnvReads {
     title:       String,
     body:        String,
     category_id: Category.Id,
+    importance:  Importance
   )
+
+  implicit val readTodoImportance: Reads[Importance] = enumReads(Importance)
 
   implicit val reads: Reads[JsValueCreateTodo] = Json.reads[JsValueCreateTodo]
 
