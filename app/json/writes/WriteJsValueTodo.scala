@@ -1,7 +1,7 @@
 package json.writes
 
-import lib.model.{ Category, Todo }
-import lib.model.Todo.Status
+import lib.model.{Category, Todo}
+import lib.model.Todo.{Importance, Status}
 import lib.persistence.default.TodoRepository.EntityEmbeddedId
 import play.api.libs.json._
 import json.writes.WriteJsValueCategory.writeCategoryId
@@ -16,6 +16,7 @@ object WriteJsValueTodo extends JsonEnvWrites {
     body:        String,
     category_id: Category.Id,
     state:       Status,
+    importance:  Importance,
     updated_at:  LocalDateTime,
     created_at:  LocalDateTime,
   )
@@ -28,6 +29,8 @@ object WriteJsValueTodo extends JsonEnvWrites {
   //     JsNumber(enum.code)
   //   }
   implicit val writeStatus: Writes[Status] = EnumStatusWrites.writes(_)
+
+  implicit val writeImportance: Writes[Importance] = EnumStatusWrites.writes(_)
 
   implicit val writes: Writes[JsValueTodoItem] = Json.writes[JsValueTodoItem]
 
@@ -42,6 +45,7 @@ object WriteJsValueTodo extends JsonEnvWrites {
       title       = todo.v.title,
       body        = todo.v.body,
       state       = todo.v.state,
+      importance  = todo.v.importance,
       updated_at  = todo.v.updatedAt,
       created_at  = todo.v.createdAt
     )
