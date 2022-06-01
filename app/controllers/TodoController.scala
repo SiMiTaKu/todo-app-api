@@ -44,6 +44,7 @@ class TodoController @Inject()(
     }
   }
 
+
   def detail(id: Long) = Action async { implicit request: Request[AnyContent] =>
     val vv = ViewValueDetail(
       title  = s"Detail  Todo No.${id}",
@@ -123,7 +124,8 @@ class TodoController @Inject()(
                                  result.v.category_id.toString,
                                  result.v.title,
                                  result.v.body,
-                                 result.v.state.toString
+                                 result.v.state.toString,
+                                 result.v.importance.toString
                                )),
                                categoryList,
                                vv
@@ -155,7 +157,8 @@ class TodoController @Inject()(
                                           category_id = Category.Id(data.category.toLong),
                                           title       = data.title,
                                           body        = data.body,
-                                          state       = Todo.Status(data.state.toShort)
+                                          state       = Todo.Status(data.state.toShort),
+                                          importance  = Todo.Importance(data.importance.toShort)
                                         ))
                                       )
                   }

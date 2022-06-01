@@ -20,6 +20,11 @@
             options = Todo.Status.values.map(status => (status.code.toString, status.name)),
             '_help -> ""
         )
+        @helper.inputRadioGroup(
+            form("importance"),
+            options = Todo.Importance.values.map(importance => (importance.code.toString, importance.name)),
+            '_help -> ""
+        )
         <input type="submit" value="Update">
     }
     <h2>

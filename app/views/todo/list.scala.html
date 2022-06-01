@@ -16,6 +16,7 @@
         @defining(categories.filter(category => category.v.id == Some(todo.v.category_id))){ thisCategory =>
         <div class = "card">
             <div class = "card__content" style ="background-color: @thisCategory.map(_.v.color)">
+                <div class = "card__content--importance">@todo.v.importance.name</div>
                 <div class = "card__content--id">@todo.v.id</div>
                 <div class = "card__content--title">@todo.v.title</div>
                 <div class = "card__content--body">@todo.v.body</div>
