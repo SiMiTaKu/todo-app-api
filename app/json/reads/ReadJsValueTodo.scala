@@ -27,6 +27,7 @@ object ReadJsValueTodo extends JsonEnvReads {
     body:        String,
     category_id: Category.Id,
     state:       Status,
+    importance:  Importance,
     updated_at:  LocalDateTime,
     created_at:  LocalDateTime
   )
