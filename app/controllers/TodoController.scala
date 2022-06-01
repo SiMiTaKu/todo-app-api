@@ -1,18 +1,21 @@
 package controllers
 
-import lib.model.{Category, Todo}
-import lib.formData.{TodoEditFormData, TodoFormData}
-import lib.formData.formData.{editForm, form}
+import lib.model.{ Category, Todo }
+import lib.formData.{ TodoEditFormData, TodoFormData }
+import lib.formData.formData.{ editForm, form }
+import lib.persistence.default.{ CategoryRepository, TodoRepository }
 
-import javax.inject._
 import play.api.mvc._
-import model.{ViewValueDetail, ViewValueEdit, ViewValueError, ViewValueList, ViewValueRegister}
-import lib.persistence.default.{CategoryRepository, TodoRepository}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
+
+import javax.inject._
+
+import model.{ViewValueList,ViewValueDetail, ViewValueEdit, ViewValueError, ViewValueRegister}
+
 
 @Singleton
 class TodoController @Inject()(
@@ -26,8 +29,8 @@ class TodoController @Inject()(
   )
 
   def list() = Action async{ implicit req =>
-    val vv  = ViewValueList(
-      title  = "Todo List",
+    val vv = ViewValueList(
+      title = "Todo List",
       cssSrc = Seq("main.css"),
       jsSrc  = Seq("main.js")
     )
@@ -40,6 +43,7 @@ class TodoController @Inject()(
       Ok(views.html.todo.list(todoList, categoryList, vv))
     }
   }
+
 
   def detail(id: Long) = Action async { implicit request: Request[AnyContent] =>
     val vv = ViewValueDetail(
@@ -85,8 +89,13 @@ class TodoController @Inject()(
         }
       },
       (todoFormData: TodoFormData) =>{
-        TodoRepository.add(Todo.apply(Category.Id(todoFormData.category.toLong), todoFormData.title, todoFormData.body)).map{ _ =>
-          Redirect(routes.TodoController.list())
+        TodoRepository.add(
+          Todo.apply(Category.Id(todoFormData.category.toLong),
+          todoFormData.title,
+          todoFormData.body,
+          Todo.Importance(todoFormData.importance.toShort))
+        ).map{
+          _ => Redirect(routes.TodoController.list())
         }
       }
     )
@@ -120,7 +129,8 @@ class TodoController @Inject()(
                                  result.v.category_id.toString,
                                  result.v.title,
                                  result.v.body,
-                                 result.v.state.toString
+                                 result.v.state.toString,
+                                 result.v.importance.toString
                                )),
                                categoryList,
                                vv
@@ -128,8 +138,6 @@ class TodoController @Inject()(
       }
     }
   }
-
-
 
   def update(id: Long) = Action async { implicit request: Request[AnyContent] =>
     val vv = ViewValueEdit(
@@ -154,7 +162,8 @@ class TodoController @Inject()(
                                           category_id = Category.Id(data.category.toLong),
                                           title       = data.title,
                                           body        = data.body,
-                                          state       = Todo.Status(data.state.toShort)
+                                          state       = Todo.Status(data.state.toShort),
+                                          importance  = Todo.Importance(data.importance.toShort)
                                         ))
                                       )
                   }

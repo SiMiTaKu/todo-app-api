@@ -35,3 +35,24 @@ GET     /category/$id<[0-9]+>/edit     controllers.CategoryController.edit(id: L
 POST    /category/$id<[0-9]+>/update   controllers.CategoryController.update(id: Long)
 
 POST    /category/$id<[0-9]+>/remove   controllers.CategoryController.remove(id: Long)
+
+#API---------------------------------------------------
+GET     /api/todo/list                     controllers.TodoApiController.list
+
+POST    /api/todo/add                      controllers.TodoApiController.add
+
+PUT     /api/todo/$id<[0-9]+>              controllers.TodoApiController.update(id: Long)
+
+GET     /api/todo/$id<[0-9]+>              controllers.TodoApiController.detail(id: Long)
+
+DELETE  /api/todo/$id<[0-9]+>              controllers.TodoApiController.remove(id:Long)
+
+GET     /api/category/list                 controllers.CategoryApiController.list
+
+POST    /api/category/add                  controllers.CategoryApiController.add
+
+PUT     /api/category/$id<[0-9]+>          controllers.CategoryApiController.update(id: Long)
+
+GET     /api/category/$id<[0-9]+>          controllers.CategoryApiController.detail(id: Long)
+
+DELETE  /api/category/$id<[0-9]+>          controllers.CategoryApiController.remove(id: Long)
