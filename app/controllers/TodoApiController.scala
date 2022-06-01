@@ -55,7 +55,8 @@ class TodoApiController @Inject() (
             Todo.apply(
               Category.Id(todoData.category_id),
               todoData.title,
-              todoData.body
+              todoData.body,
+              Todo.Importance(1) //仮
             )
           ).map(_ => Ok)
         }

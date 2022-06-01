@@ -89,8 +89,13 @@ class TodoController @Inject()(
         }
       },
       (todoFormData: TodoFormData) =>{
-        TodoRepository.add(Todo.apply(Category.Id(todoFormData.category.toLong), todoFormData.title, todoFormData.body)).map{ _ =>
-          Redirect(routes.TodoController.list())
+        TodoRepository.add(
+          Todo.apply(Category.Id(todoFormData.category.toLong),
+          todoFormData.title,
+          todoFormData.body,
+          Todo.Importance(todoFormData.importance.toShort))
+        ).map{
+          _ => Redirect(routes.TodoController.list())
         }
       }
     )

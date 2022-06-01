@@ -40,7 +40,7 @@ object Todo {
     case object Unimportant  extends Importance(code = 1, name = "Unimportant")
   }
 
-  def apply(category_id: Category.Id, title: String, body: String): WithNoId = {
+  def apply(category_id: Category.Id, title: String, body: String, importance: Importance): WithNoId = {
     new Entity.WithNoId(
       new Todo(
         id          = None,
@@ -48,7 +48,7 @@ object Todo {
         title       = title,
         body        = body,
         state       = Status(0),
-        importance  = Importance(1)
+        importance  = importance
       )
     )
   }
