@@ -25,22 +25,23 @@ case class TodoTable[P <: JdbcProfile]()(implicit val driver: P)
     def title       = column[String]        ("title",       O.Utf8Char255)
     def body        = column[String]        ("body",        O.Utf8Char255)
     def state       = column[Status]        ("state",       O.UInt8)
+    def importance  = column[Importance]    ("importance",  O.UInt8)
     def updatedAt   = column[LocalDateTime] ("updated_at",  O.TsCurrent)
     def createdAt   = column[LocalDateTime] ("created_at",  O.Ts)
 
     type TableElementTuple = (
-      Option[Id], Category.Id, String, String, Status, LocalDateTime, LocalDateTime
+      Option[Id], Category.Id, String, String, Status, Importance, LocalDateTime, LocalDateTime
       )
 
     // DB <=> Scala の相互のmapping定義
-    def * = (id.?, category_id, title, body, state, updatedAt, createdAt) <> (
+    def * = (id.?, category_id, title, body, state, importance, updatedAt, createdAt) <> (
       // Tuple(table) => Model
       (t: TableElementTuple) => Todo(
-        t._1, t._2, t._3, t._4, t._5, t._6, t._7,
+        t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8
       ),
       // Model => Tuple(table)
       (v: TableElementType) => Todo.unapply(v).map { t => (
-        t._1, t._2, t._3, t._4, t._5, LocalDateTime.now(), t._7
+        t._1, t._2, t._3, t._4, t._5, t._6, LocalDateTime.now(), t._8
       )}
     )
   }

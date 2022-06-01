@@ -11,14 +11,15 @@ import java.time.LocalDateTime
 import Todo._
 
 case class Todo(
-                 id:          Option[Id],
-                 category_id: Category.Id,
-                 title:       String,
-                 body:        String,
-                 state:       Status,
-                 updatedAt:   LocalDateTime = NOW,
-                 createdAt:   LocalDateTime = NOW
-               ) extends EntityModel[Id]
+  id:          Option[Id],
+  category_id: Category.Id,
+  title:       String,
+  body:        String,
+  state:       Status,
+  importance:  Importance,
+  updatedAt:   LocalDateTime = NOW,
+  createdAt:   LocalDateTime = NOW
+) extends EntityModel[Id]
 
 object Todo {
   val  Id = the[Identity[Id]]
@@ -33,6 +34,12 @@ object Todo {
     case object DONE extends Status(code = 2, name = "DONE")
   }
 
+  sealed abstract class Importance(val code: Short, val name: String) extends EnumStatus
+  object Importance extends EnumStatus.Of[Importance] {
+    case object Important    extends Importance(code = 0, name = "Important")
+    case object Unimportant  extends Importance(code = 1, name = "Unimportant")
+  }
+
   def apply(category_id: Category.Id, title: String, body: String): WithNoId = {
     new Entity.WithNoId(
       new Todo(
@@ -41,6 +48,7 @@ object Todo {
         title       = title,
         body        = body,
         state       = Status(0),
+        importance  = Importance(1)
       )
     )
   }
